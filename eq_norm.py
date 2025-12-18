@@ -12,8 +12,6 @@ def poly_interpol_eq_norm(x, y):
             Phi[i, j] = p
             p *= x[i]
 
-    print(Phi)
-    print(y)
     A = np.linalg.solve(Phi, y)
     return A
 
@@ -41,7 +39,7 @@ def fct_from_coeff(A, xn):
     coef = 0
     fx = 0
     for a in A:
-        fx += xn * a ** coef 
+        fx += a * (xn ** coef)
         coef += 1
     return fx
 
