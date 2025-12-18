@@ -15,6 +15,20 @@ def poly_interpol_eq_norm(x, y):
     A = np.linalg.solve(Phi, y)
     return A
 
+def poly_approx_orthogonal(x, y, deg):
+    N = len(x)
+    M = deg - 1
+    P = np.zeros((N, M))
+    for i in range(N):
+        p = 1
+        for j in range(M):
+            P[i, j] = p
+            p *= x[i]
+    pt = P.T
+    # A = inv(P' * P) * P'* y
+    A = np.linalg.inv(pt @ P) @ pt @ y
+    return A
+
 
 def poly_approx_eq_norm(x, y, deg):
     # Validation
@@ -42,6 +56,7 @@ def fct_from_coeff(A, xn):
         fx += a * (xn ** coef)
         coef += 1
     return fx
+
 
 if __name__ == "__main__":
     print("Approximation")
@@ -76,6 +91,32 @@ if __name__ == "__main__":
     print("\nLes points sont :")
     for x, y in zip(xn, yn):
         print(f"({x}, {y})")
+
+    print(f"\nOrthogonal")
+    A = poly_approx_orthogonal(xn, yn, 5)
+
+    print(f"Les coef sont de \n {A}")
+    err = 0
+    for x, y in zip(xn, yn):
+        err += (fct_from_coeff(A, x) - y) ** 2
+    print(f"L'erreur quadratique est de {err}")
+    N = len(xn)
+    RMSE = np.sqrt((1/N*err))
+    print(f"Le RMSE est de {RMSE}")
+
+    # Calcul du R²
+    yf = 0
+    for y in yn:
+        yf += 1/N * y
+
+    R_num = 0
+    R_den = 0
+    for x, y in zip(xn, yn):
+        R_num += (fct_from_coeff(A, x) - yf) ** 2
+        R_den += (y - yf) ** 2
+    R2 = R_num / R_den
+    print(f"Le coefficient R² est de {R2}")
+
 
     print("\nInterpolation")
     # Eq theorique DESMOS -3-0.5x+1.5x^{2}-0.15x^{3}
