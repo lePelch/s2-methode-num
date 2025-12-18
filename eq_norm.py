@@ -59,6 +59,20 @@ if __name__ == "__main__":
         RMSE = np.sqrt((1/N*err))
         print(f"Le RMSE est de {RMSE}")
 
+        # Calcul du R²
+        yf = 0
+        for y in yn:
+           yf += 1/N * y
+
+        R_num = 0
+        R_den = 0
+        for x, y in zip(xn, yn):
+            R_num += (fct_from_coeff(A, x) - yf) ** 2
+            R_den += (y - yf) ** 2
+        R2 = R_num / R_den
+        print(f"Le coefficient R² est de {R2}")
+    
+    # Formatage point les mettres dans DESMOS rapidement
     print("\nLes points sont :")
     for x, y in zip(xn, yn):
         print(f"({x}, {y})")
